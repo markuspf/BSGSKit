@@ -6,23 +6,8 @@ extern "C" {
 #include "src/compiled.h"          /* GAP headers */
 }
 
-
-Obj FuncTestCommand(Obj self)
-{
-    return INTOBJ_INT(42);
-}
-
-Obj FuncTestCommandWithParams(Obj self, Obj param, Obj param2)
-{
-    /* simply return the first parameter */
-    return param;
-}
-
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC(TestCommand, 0, ""),
-    GVAR_FUNC(TestCommandWithParams, 2, "param, param2"),
-
     { 0 } /* Finish with an empty entry */
 };
 

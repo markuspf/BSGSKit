@@ -3,17 +3,16 @@
 #
 #! @Chapter Introduction
 #!
-#! BSGSKit is a package which does some
-#! interesting and cool things
+#! BSGSKit contains implementations of algorithms to determine
+#! and handle base and strong generating sets for groups.
+#!
+#! We aim for these algorithms to be simple and transparent
 #!
 #! @Chapter Functionality
 #!
+#! @Section Orbits and Schreier Trees
 #!
-#! @Section Example Methods
-#!
-#! This section will describe the example
-#! methods of BSGSKit
-
 #! @Description
-#!   Insert documentation for your function here
-DeclareGlobalFunction( "BSGSKit_Example" );
+#!   Orbit computation
+DeclareGlobalFunction( "BSGSKit_Orbit" );
+
