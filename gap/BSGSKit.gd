@@ -16,3 +16,7 @@
 #!   Orbit computation
 DeclareGlobalFunction( "BSGSKit_Orbit" );
 
+
+#! @Description
+#!  
+DeclareGlobalFunction( "BSGSKit_TraceSchreierTree" );
