@@ -7,6 +7,7 @@ Simple well performing implementations of basic (permutation) group algorithms, 
 
 ## Contact
 
+
 ## License
 
 BSGSKit is free software; you can redistribute it and/or modify it under the
