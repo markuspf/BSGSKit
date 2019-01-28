@@ -1,17 +1,15 @@
+[![Build Status](https://travis-ci.org/markuspf/BSGSKit.svg?branch=master)](https://travis-ci.org/markuspf/BSGSKit)
+[![Code Coverage](https://codecov.io/github/markuspf/BSGSKit/coverage.svg?branch=master&token=)](https://codecov.io/gh/markuspf/BSGSKit)
+
 # The GAP package BSGSKit
 
-TODO: add a description of your package; perhaps also instructions how how to
-install and use it, resp. where to find out more
-
+Simple well performing implementations of basic (permutation) group algorithms, from orbits, schreier trees, to Schreier-Sims.
 
 ## Contact
 
-TODO: add info on how to contact you and/or how to report issues with your
-package
-
 ## License
 
-TODO: Provide information on the license of your package. A license is
-important as it determines who has a right to distribute your package. The
-"default" license to consider is GNU General Public License v2 or later, as
-that is the license of GAP itself.
+BSGSKit is free software; you can redistribute it and/or modify it under the
+terms of the BSD 3-clause license.
+
+For details see the files COPYRIGHT.md and LICENSE.
