@@ -4,63 +4,56 @@
 # Implementations
 #
 
+# bsgs := rec( basepoint, schreiertree, gens, stab, act )
+InstallGlobalFunction( BSGSKit_Strip,
+function(bsgs, elt)
+    local baseimage, u;
 
-#
-# Options for orbits
-#  - Compute just the orbit (no use for Schreier-Sims)
-#  - Compute orbit with representatives (uses memory)
-#  - Compute a Schreier Vector (makes sifting slower)
-#  - Compute orbit with Schreier Vector that is made shallow(er)
-#
+    baseimage := bsgs.act(bsgs.basepoint, elt);
 
-#
-# This is just a simple, universal orbit computation
-#
-# We call pt the base point of the orbit.
-# TODO: Consider whether this is a good name
-#
-InstallGlobalFunction( BSGSKit_Orbit,
-function( gens, pt, act )
-    local orbit, labels, new, s, p, pp, k;
-
-    k := Length(gens);
-    labels := [1..Length(gens)];
-
-    orbit := HashMap();
-    new := PlistDeque(1024);
-
-    orbit[pt] := 0;
-    PushBack(new, pt);
-    repeat
-        p := PopFront(new);
-        for s in [1..k] do
-            pp := act(p, gens[s]);
-            if not (pp in orbit) then
-                orbit[pp] := s;
-                PushBack(new, pp);
-            fi;
-        od;
-    until IsEmpty(new);
-    return rec( map := orbit, gens := gens, labels := labels, act := act );
-end);
-
-# Computes the element g of G such that
-# pt^g = base
-InstallGlobalFunction( BSGSKit_TraceSchreierTree,
-function(tree, pt)
-    local g, gen, elt;
-
-    if pt in tree.map then
-        g := One(tree.gens);
-        elt := tree.map[pt];
-        while elt <> 0 do
-            gen := tree.gens[elt]^-1;
-            g := gen * g;
-            pt := tree.act(pt, gen);
-            elt := tree.map[pt];
-        od;
-        return g;
+    if not (baseimage in bsgs.orb) then
+        # can this be done by having an empty orbit in the last
+        # bit of the chain?
+        return elt;
     else
-        return fail;
+        u := BSGSKit_TraceSchreierTree(bsgs.tree, elt);
+        return BSGSKit_Strip(bsgs.stab, elt * u^-1);
     fi;
 end);
+
+InstallGlobalFunction( BSGSKit_SchreierGen,
+function(tree, pt, s)
+    local t1,t2;
+    t1 := BSGSKit_TraceSchreierTree(tree, pt);
+    t2 := BSGSKit_TraceSchreierTree(tree, tree.act(pt, s));
+    # TODO: This is a product of permutations, which also
+    #       is produced by tracing
+    #       so we can make a permutation word here by
+    #       concatenating?
+    return t1 * s * t2^-1;
+end);
+
+InstallGlobalFunction( BSGSKit_Schreier,
+function(bsgs)
+    local T, stree, p, s, g, base;
+
+    base := bsgs.base; # cumulative base, don't like it.
+    stree := BSGSKit_SchreierTree(bsgs.gens, bsgs.basepoint, bsgs.act);
+
+    # enumerating schreier tree seems to be a thing
+    for p in stree do
+        for s in bsgs.gens do
+            # We know the trace of p already, yet compute it
+            # again.
+            g := BSGSKit_SchreierGen(bsgs, p, s);
+#            Add(S,g); Add(S,g^-1);
+            if base^g = base then
+#                Add(base, newpoint);
+                # add new base point
+            fi;
+        od;
+    od;
+
+    return bsgs;
+end);
+

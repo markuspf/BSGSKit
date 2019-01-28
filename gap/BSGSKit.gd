@@ -8,15 +8,12 @@
 #!
 #! We aim for these algorithms to be simple and transparent
 #!
-#! @Chapter Functionality
-#!
-#! @Section Orbits and Schreier Trees
-#!
-#! @Description
-#!   Orbit computation
-DeclareGlobalFunction( "BSGSKit_Orbit" );
+DeclareGlobalFunction( "BSGSKit_Strip" );
+DeclareGlobalFunction( "BSGSKit_SchreierGen" );
+DeclareGlobalFunction( "BSGSKit_Schreier" );
 
 
 #! @Description
-#!  
+#!
 DeclareGlobalFunction( "BSGSKit_TraceSchreierTree" );
+DeclareGlobalFunction( "BSGSKit_TraceSchreierTree_2" );
