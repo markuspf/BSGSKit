@@ -10,5 +10,6 @@ fi;
 Unbind(_PATH_SO);
 
 
+ReadPackage( "BSGSKit", "gap/Random.gd");
 ReadPackage( "BSGSKit", "gap/SchreierTree.gd");
 ReadPackage( "BSGSKit", "gap/BSGSKit.gd");
