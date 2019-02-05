@@ -120,11 +120,13 @@ function(tree, pt)
     local g, gen, elt;
 
     if pt in tree.map then
-        g := [];
+#         g := [];
+        g := ();
         elt := tree.map[pt];
         while elt <> -1 do
             gen := tree.gens[elt]^-1; # might want to just pre-compute inverses...
-            Add(g, elt);
+            g := g * gen;
+            #    Add(g, elt);
             pt := tree.act(pt, gen);
             elt := tree.map[pt];
         od;

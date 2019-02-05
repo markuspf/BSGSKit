@@ -8,10 +8,19 @@
 #!
 #! We aim for these algorithms to be simple and transparent
 #!
+
+DeclareInfoClass( "BSGSKit_SchreierSims" );
+
+
+DeclareGlobalFunction( "BSGSKit_SchreierDown" );
+DeclareGlobalFunction( "BSGSKit_SchreierUp" );
+
 DeclareGlobalFunction( "BSGSKit_Strip" );
 DeclareGlobalFunction( "BSGSKit_SchreierGen" );
 DeclareGlobalFunction( "BSGSKit_Schreier" );
 
+DeclareGlobalFunction( "BSGSKit_AsBSGSKitStabChain");
+DeclareGlobalFunction( "BSGSKit_BaseOfStabChain" );
 
 #! @Description
 #!
