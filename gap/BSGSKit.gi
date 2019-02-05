@@ -4,6 +4,7 @@
 # Implementations
 #
 
+# 
 InstallGlobalFunction( BSGSKit_BaseOfStabChain,
 function(bsgs)
     if IsBound(bsgs.stab) then
@@ -26,7 +27,7 @@ function(sc)
                                             , res.act );
     if IsBound(sc.stabilizer) then
         if IsBound(sc.stabilizer.stabilizer) then
-            res.stab := sc_to_bsgs(sc.stabilizer);
+            res.stab := BSGSKit_AsBSGSKitStabChain(sc.stabilizer);
         fi;
     fi;
 
@@ -40,14 +41,21 @@ function(bsgs, elt)
     local baseimage, u;
 
     baseimage := bsgs.act(bsgs.basepoint, elt);
+    u := BSGSKit_TraceSchreierTree(bsgs.schreiertree, baseimage);
 
-    if not (baseimage in bsgs.orb) then
-        # can this be done by having an empty orbit in the last
-        # bit of the chain?
+    # The baseimage is not in this level's orbit.
+    if u = fail then
         return [bsgs, elt];
+
+    # Found a representative
     else
-        u := BSGSKit_TraceSchreierTree(bsgs.tree, elt);
-        return BSGSKit_Strip(bsgs.stab, elt * u^-1);
+        elt := elt * u;
+
+        if IsBound(bsgs.stab) then
+            return BSGSKit_Strip(bsgs.stab, elt);
+        else
+            return [bsgs, elt];
+        fi;
     fi;
 end);
 
@@ -66,45 +74,39 @@ BSGSKit_NewLink := function(bpt, gens, act)
               , schreiertree := BSGSKit_SchreierTree(gens, bpt, act) );
 end;
 
+InstallGlobalFunction( BSGSKit_SchreierAdd,
+function(bsgs, elt)
+
+    Add(bsgs.gens, elt);
+    bsgs.orbit := BSGSKit_SchreierTree(bsgs.gens, bsgs.basepoint, bsgs.act);
+    if IsBound(bsgs.stab) then
+        BSGSKit_SchreierAdd(bsgs.gens, elt);
+    fi;
+end);
 
 # bsgs := rec( basepoint, schreiertree, gens, stab, act )
 InstallGlobalFunction( BSGSKit_SchreierDown,
 function(bsgs, elt)
     local baseimage, u, add, e;
 
-    baseimage := bsgs.act(bsgs.basepoint, elt);
+    add := BSGSKit_Strip(bsgs, elt);
 
-    # Stripping fails because orbit not big enough
-    if not (baseimage in bsgs.schreiertree.map) then
-        add := elt;
-    else
-        u := BSGSKit_TraceSchreierTree(bsgs.schreiertree, baseimage);
-        e := elt * u;
+    # stripping failed
+    if not IsOne(add[2]) then
+        # We reached the bottom of the chain, but still have a non-identity
+        # element, so we extend the base by another point
 
-        if not IsOne(e) then
-            if IsBound(bsgs.stab) then
-                bsgs.stab := BSGSKit_SchreierDown(bsgs.stab, e);
-            else
-                # We reached the bottom of the chain, but still have a non-identity
-                # element, So we extend the base by another point
-                bsgs.stab := BSGSKit_NewLink( SmallestMovedPoint(e)
-                                            , [e], bsgs.act );
-                add := e;
-            fi;
+        # meh.
+        if not IsBound(bsgs.stab) then
+            add[1].stab := BSGSKit_NewLink( SmallestMovedPoint(e)
+                                        , [e], bsgs.act );
         else
-            # Stripping was successful, don't need to add anything
+            # TODO: .stab ok?
+            BSGSKit_SchreierAdd(bsgs.stab, add[2]);
         fi;
+        return true;
     fi;
-
-    # Back up, adding generators if necessary
-    if IsBound(add) then
-        Print("add ", add, "\n");
-        Add(bsgs.gens, add);
-        bsgs.orbit := BSGSKit_SchreierTree(bsgs.gens, bsgs.basepoint, bsgs.act);
-    fi;
-
-    # BSGSKit_SchreierUp(bsgs);
-    return bsgs;
+    return false;
 end);
 
 InstallGlobalFunction( BSGSKit_SchreierUp,
@@ -117,7 +119,13 @@ function(bsgs)
         for p in Keys(bsgs.schreiertree.map) do
             for s in bsgs.gens do
                 sg := BSGSKit_SchreierGen(bsgs.schreiertree, p, s);
+                Print("SchreierGen: ", sg, "\n");
                 sr := BSGSKit_SchreierDown(bsgs, sg);
+
+                # TODO: Hack
+                if sr then
+                    BSGSKit_SchreierUp(bsgs);
+                fi;
             od;
         od;
     fi;

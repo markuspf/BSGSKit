@@ -12,6 +12,7 @@
 DeclareInfoClass( "BSGSKit_SchreierSims" );
 
 
+DeclareGlobalFunction( "BSGSKit_SchreierAdd" );
 DeclareGlobalFunction( "BSGSKit_SchreierDown" );
 DeclareGlobalFunction( "BSGSKit_SchreierUp" );
 
