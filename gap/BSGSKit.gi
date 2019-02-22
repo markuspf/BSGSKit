@@ -119,7 +119,6 @@ function(bsgs)
         for p in Keys(bsgs.schreiertree.map) do
             for s in bsgs.gens do
                 sg := BSGSKit_SchreierGen(bsgs.schreiertree, p, s);
-                Print("SchreierGen: ", sg, "\n");
                 sr := BSGSKit_SchreierDown(bsgs, sg);
 
                 # TODO: Hack
