@@ -15,7 +15,7 @@ gap> st := BSGSKit_SchreierTree( gens, 1, \^ );;
 gap> Size(st.map) = 306936;
 true
 gap> BSGSKit_TraceSchreierTree(st, 1);
-[  ]
+()
 gap> oo := Orbit(Group(gens), 1);;
 gap> Set(Keys(st.map)) = Set(oo);
 true
