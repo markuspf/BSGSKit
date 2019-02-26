@@ -34,7 +34,11 @@ function( gens, pt, act )
             fi;
         od;
     until IsEmpty(new);
-    return rec( map := orbit, gens := gens, labels := labels, act := act );
+    return Objectify( BSGSKit_SchreierTreeType
+                    , rec( map := orbit
+                         , gens := gens
+                         , labels := labels
+                         , act := act ) );
 end);
 
 InstallGlobalFunction( BSGSKit_Orbit_Depths,
@@ -112,26 +116,110 @@ function(gens,pt)
     return rec( map := orbit, gens := gens, labels := labels, act := \^ );
 end);
 
-
+# InstallGlobalFunction( BSGSKit_SchreierTracer,
+# function(tree, pt)
+#     local gen, elt;
+#
+#     elt := tree[pt];
+#     if pt <> fail then
+#         gen := tree!.gens[elt]^-1;
+#         pt := tree.act(pt, gen);
+#         return [ elt, pt ];
+#     else
+#         return fail;
+#     fi;
+# end);
+#
+# InstallGlobalFunction( BSGSKit_TraceSchreierTreeWord,
+# function(tree, pt)
+#     local word;
+#
+#     word := [];
+#
+#     accum := function(e)
+#         Add(word, e);
+#     end;
+#     BSGSKit_TraceSchreierTree(tree, pt, accum);
+#     return word;
+# end);
+#
+# InstallGlobalFunction( BSGSKit_TraceSchreierTreeElement,
+# function(tree, pt)
+#     local g;
+#
+#     g := One(tree!.gens);
+#
+#     accum := function(e)
+#         g := g * tree!.gens[e]^-1;
+#     end;
+#     BSGSKit_TraceSchreierTree(tree, pt, accum);
+#     return word;
+# end);
+#
+# FIXME: This should be deduplicated
 # Computes the element g of G such that
 # pt^g = base
-InstallGlobalFunction( BSGSKit_TraceSchreierTree,
+InstallGlobalFunction( BSGSKit_TraceSchreierTreeWord,
 function(tree, pt)
-    local g, gen, elt;
+    local word, gen, elt;
 
-    if pt in tree.map then
-#         g := [];
-        g := ();
-        elt := tree.map[pt];
+    elt := tree[pt];
+    if elt <> fail then
+        word := [];
         while elt <> -1 do
-            gen := tree.gens[elt]^-1; # might want to just pre-compute inverses...
+            Add(word, elt);
+            gen := tree!.gens[elt]^-1; # might want to just pre-compute inverses...
+            pt := tree!.act(pt, gen);
+            elt := tree[pt];
+        od;
+        return word;
+    else
+        return fail;
+    fi;
+end);
+
+InstallGlobalFunction( BSGSKit_TraceSchreierTreeElement,
+function(tree, pt)
+    local elt, g, gen;
+
+    elt := tree[pt];
+    if elt <> fail then
+        g := ();
+        while elt <> -1 do
+            gen := tree!.gens[elt]^-1; # might want to just pre-compute inverses...
             g := g * gen;
-            #    Add(g, elt);
-            pt := tree.act(pt, gen);
-            elt := tree.map[pt];
+            pt := tree!.act(pt, gen);
+            elt := tree[pt];
         od;
         return g;
     else
         return fail;
     fi;
+end);
+
+InstallMethod( \in, "for an object, and an BSGSKit Schreier Tree"
+               , [ IsObject, IsBSGSKit_SchreierTree ],
+function(elt, tree)
+    return elt in tree!.map;
+end);
+
+InstallOtherMethod( \[\], "for a BSGSKit Schreier Tree and an object"
+                  , [ IsBSGSKit_SchreierTree, IsObject ],
+function(tree, elt)
+    return tree!.map[elt];
+end);
+
+InstallOtherMethod( Iterator, "for a BSGSKit Schreier Tree"
+                  , [ IsBSGSKit_SchreierTree ],
+function(tree)
+    return KeyIterator(tree!.map);
+end);
+
+#
+# Housekeeping
+#
+InstallMethod( ViewString, "for a BSGSKit Schreier Tree"
+               , [ IsBSGSKit_SchreierTreeRep ],
+function(tree)
+    return STRINGIFY("<schreier tree with ", Size(tree!.map), " elements>");
 end);

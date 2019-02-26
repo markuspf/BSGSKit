@@ -20,10 +20,4 @@ DeclareGlobalFunction( "BSGSKit_Strip" );
 DeclareGlobalFunction( "BSGSKit_SchreierGen" );
 DeclareGlobalFunction( "BSGSKit_Schreier" );
 
-DeclareGlobalFunction( "BSGSKit_AsBSGSKitStabChain");
-DeclareGlobalFunction( "BSGSKit_BaseOfStabChain" );
 
-#! @Description
-#!
-DeclareGlobalFunction( "BSGSKit_TraceSchreierTree" );
-DeclareGlobalFunction( "BSGSKit_TraceSchreierTree_2" );
