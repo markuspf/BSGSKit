@@ -7,26 +7,26 @@
 
 InstallGlobalFunction( BSGSKit_SchreierGen,
 function(tree, pt, s)
-    local t1,t2;
+    local t1, t2;
     t1 := BSGSKit_TraceSchreierTreeElement(tree, pt);
     t2 := BSGSKit_TraceSchreierTreeElement(tree, tree!.act(pt, s));
     return t1 * s * t2^-1;
 end);
 
 BSGSKit_NewLink := function(bpt, gens, act)
-    return rec( basepoint := bpt
-              , gens := gens
-              , act := act
-              , schreiertree := BSGSKit_SchreierTree(gens, bpt, act) );
+    return Objectify( BSGSKit_StabChainType
+                    , rec( basepoint := bpt
+                         , gens := gens
+                         , act := act
+                         , schreiertree := BSGSKit_SchreierTree(gens, bpt, act) ) );
 end;
 
 InstallGlobalFunction( BSGSKit_SchreierAdd,
 function(bsgs, elt)
-
-    Add(bsgs.gens, elt);
-    bsgs.orbit := BSGSKit_SchreierTree(bsgs!.gens, bsgs!.basepoint, bsgs!.act);
+    Add(bsgs!.gens, elt);
+    bsgs!.schreiertree := BSGSKit_SchreierTree(bsgs!.gens, bsgs!.basepoint, bsgs!.act);
     if IsBound(bsgs!.stab) then
-        BSGSKit_SchreierAdd(bsgs!.gens, elt);
+        BSGSKit_SchreierAdd(bsgs!.stab, elt);
     fi;
 end);
 
@@ -44,10 +44,9 @@ function(bsgs, elt)
 
         # meh.
         if not IsBound(bsgs!.stab) then
-            add.bsgs!.stab := BSGSKit_NewLink( SmallestMovedPoint(e)
-                                             , [e], bsgs.act );
+            add.bsgs!.stab := BSGSKit_NewLink( SmallestMovedPoint(add.elt)
+                                             , [add.elt], bsgs!.act );
         else
-            # TODO: .stab ok?
             BSGSKit_SchreierAdd(bsgs!.stab, add.elt);
         fi;
         return true;
@@ -61,20 +60,18 @@ function(bsgs)
 
     if IsBound(bsgs!.stab) then
         BSGSKit_SchreierUp(bsgs!.stab);
-
-        for p in bsgs!.schreiertree do
-            Print("p: ", p, "\n");
-            for s in bsgs!.gens do
-                sg := BSGSKit_SchreierGen(bsgs!.schreiertree, p, s);
-                sr := BSGSKit_SchreierDown(bsgs, sg);
-
-                # TODO: Hack
-                if sr then
-                    BSGSKit_SchreierUp(bsgs);
-                fi;
-            od;
-        od;
     fi;
+
+    for p in bsgs!.schreiertree do
+        for s in bsgs!.gens do
+            sg := BSGSKit_SchreierGen(bsgs!.schreiertree, p, s);
+            sr := BSGSKit_SchreierDown(bsgs, sg);
+
+            if sr then
+                BSGSKit_SchreierUp(bsgs);
+            fi;
+        od;
+    od;
 
     return bsgs;
 end);
