@@ -61,3 +61,15 @@ function(bsgs, elt)
     fi;
 end);
 
+InstallGlobalFunction( BSGSKit_StabChain,
+function(gens, act)
+    local res, basept;
+
+    res := rec( gens := gens
+              , act := act
+              , basepoint := SmallestMovedPoint(gens) );
+    res.schreiertree := BSGSKit_SchreierTree( res.gens
+                                            , res.basepoint
+                                            , res.act );
+    return Objectify( BSGSKit_StabChainType, res );
+end);

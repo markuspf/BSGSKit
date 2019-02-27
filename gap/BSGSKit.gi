@@ -63,6 +63,7 @@ function(bsgs)
         BSGSKit_SchreierUp(bsgs!.stab);
 
         for p in bsgs!.schreiertree do
+            Print("p: ", p, "\n");
             for s in bsgs!.gens do
                 sg := BSGSKit_SchreierGen(bsgs!.schreiertree, p, s);
                 sr := BSGSKit_SchreierDown(bsgs, sg);

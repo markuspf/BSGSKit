@@ -10,3 +10,5 @@ BindGlobal( "BSGSKit_StabChainFamily"
           , NewFamily("BSGSKit_StabChainFamily", IsObject));
 BindGlobal( "BSGSKit_StabChainType"
           , NewType( BSGSKit_StabChainFamily, IsBSGSKit_StabChainRep ) );
+
+DeclareGlobalFunction( "BSGSKit_StabChain" );
