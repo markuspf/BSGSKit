@@ -1,5 +1,6 @@
 DeclareGlobalFunction( "BSGSKit_AsBSGSKitStabChain");
 DeclareGlobalFunction( "BSGSKit_BaseOfStabChain" );
+DeclareGlobalFunction( "BSGSKit_GroupSize" );
 
 DeclareCategory( "IsBSGSKit_StabChain", IsObject );
 DeclareRepresentation( "IsBSGSKit_StabChainRep"

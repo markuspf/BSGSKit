@@ -75,5 +75,3 @@ function(bsgs)
 
     return bsgs;
 end);
-
-

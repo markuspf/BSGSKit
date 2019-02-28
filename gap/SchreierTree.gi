@@ -215,11 +215,17 @@ function(tree)
     return KeyIterator(tree!.map);
 end);
 
+InstallOtherMethod( Size, "for a BSGSKit Schreier Tree"
+               , [ IsBSGSKit_SchreierTree ],
+function(tree)
+    return Size(tree!.map);
+end);
+
 #
 # Housekeeping
 #
 InstallMethod( ViewString, "for a BSGSKit Schreier Tree"
                , [ IsBSGSKit_SchreierTreeRep ],
 function(tree)
-    return STRINGIFY("<schreier tree with ", Size(tree!.map), " elements>");
+    return STRINGIFY("<schreier tree with ", Size(tree), " elements>");
 end);

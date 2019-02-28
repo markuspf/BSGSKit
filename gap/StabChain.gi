@@ -16,6 +16,17 @@ function(bsgs)
     fi;
 end);
 
+# TODO: Should check whether the stabilizer chain
+#       is correct!
+InstallGlobalFunction( BSGSKit_GroupSize,
+function(bsgs)
+    if IsBound(bsgs!.stab) then
+        return Size(bsgs!.schreiertree) * BSGSKit_GroupSize(bsgs!.stab);
+    else
+        return Size(bsgs!.schreiertree);
+    fi;
+end);
+
 # Mainly for testing purposes
 # Converts a GAP Stabilizer chain into a BSGSKit Stabilizer
 # Chain
